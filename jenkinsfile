@@ -1,0 +1,38 @@
+pipeline {
+  agent any
+
+  stages {
+    stage('Checkout') {
+      steps {
+        // Clonar el repositorio de GitHub
+        git 'https://github.com/wilsonhm/ejemplo2.git'
+      }
+    }
+
+    stage('Install Dependencies') {
+      steps {
+        // Instalar dependencias de Laravel
+        sh 'composer install'
+      }
+    }
+
+    stage('Run Tests') {
+      steps {
+        // Ejecutar pruebas de Laravel
+        sh 'php artisan test'
+      }
+    }
+
+    stage('SonarQube Analysis') {
+      steps {
+        // Configurar variables de entorno para SonarQube
+        withSonarQubeEnv('SonarQube') {
+          // Ejecutar el análisis de SonarQube
+          sh 'sonar-scanner'
+        }
+      }
+    }
+
+    // Agrega más etapas según sea necesario, como despliegue, notificaciones, etc.
+  }
+}
